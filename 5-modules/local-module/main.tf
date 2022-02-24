@@ -18,16 +18,20 @@ module "vpcModule" {
   source = "./modules/vpc-module/"
 }
 
-variable "aws_image_id" {
-  type        = string
-  description = "The id of the machine image (AMI) to use for the server."
-  default     = "ami-0c6615d1e95c98aca"
+resource "aws_key_pair" "keystore" {
+  key_name   = var.app_name       
+  public_key = tls_private_key.private_key.public_key_openssh
+
+#  provisioner "local-exec" {          # Create "myKey.pem" to your computer!!
+#    command = "echo tls_private_key.private_key.private_key_pem > ./myKey.pem"
+#  }
 }
 
-variable "app_name" {
-  type        = string
-  description = "App name to the project"
-  default     = "myApp"
+resource "local_file" "pem_file" {
+  filename = pathexpand("~/.ssh/${var.app_name}.pem")
+  file_permission = "400"
+  directory_permission = "700"
+  sensitive_content = tls_private_key.private_key.private_key_pem
 }
 
 resource "aws_security_group" "ssh_connection" {
@@ -55,12 +59,12 @@ resource "aws_security_group" "ssh_connection" {
   }
 }
 
-resource "aws_instance" "testInstance" {
+resource "aws_instance" "myapp_instance" {
   ami                    = var.aws_image_id
   instance_type          = "t2.micro"
   subnet_id              = module.vpcModule.public_subnet_id
-  vpc_security_group_ids = aws_security_group.ssh_connection.id
-  key_name               = "mumbai"
+  vpc_security_group_ids = [aws_security_group.ssh_connection.id]
+  key_name               = aws_key_pair.keystore.key_name
 
 tags = {
     Name = var.app_name

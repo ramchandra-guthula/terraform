@@ -14,6 +14,10 @@ provider "aws" {
   region  = "ap-south-1"
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 resource "aws_vpc" "myapp-vpc" {
   cidr_block           = var.ip_ranges[0]["vpc_range"]
   instance_tenancy     = "default"
@@ -26,8 +30,10 @@ resource "aws_vpc" "myapp-vpc" {
 }
 
 resource "aws_subnet" "myapp-public-subnet" {
-  vpc_id     = aws_vpc.myapp-vpc.id
-  cidr_block = var.ip_ranges[0]["public_subnet_range"]
+  vpc_id     		  = aws_vpc.myapp-vpc.id
+  cidr_block 		  = var.ip_ranges[0]["public_subnet_range"]
+  map_public_ip_on_launch = true
+  availability_zone	  = data.aws_availability_zones.available.names[0]
 
   tags = {
     Name = "${var.vpc_name}-public-subnet"
@@ -35,8 +41,9 @@ resource "aws_subnet" "myapp-public-subnet" {
 }
 
 resource "aws_subnet" "myapp-private-subnet" {
-  vpc_id     = aws_vpc.myapp-vpc.id
-  cidr_block = var.ip_ranges[0]["private_subnet_range"]
+  vpc_id     		  = aws_vpc.myapp-vpc.id
+  cidr_block 		  = var.ip_ranges[0]["private_subnet_range"]
+  availability_zone       = data.aws_availability_zones.available.names[1]
 
   tags = {
     Name = "${var.vpc_name}-private-subnet"
