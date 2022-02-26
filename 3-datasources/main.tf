@@ -14,7 +14,7 @@ provider "aws" {
   region  = "ap-south-1"
 }
 
-data "aws_ami" "web" {
+data "aws_ami" "ami_id" {
   owners      = ["amazon", "self"]
   most_recent = true
 
@@ -29,15 +29,20 @@ data "aws_ami" "web" {
   }
 
   tags = {
-    values = "amzn2-ami-*-x86_64-gp2"
+    values = "amzn2-ami-kernel-5.10-hvm-*-x86_64-gp2"
   }
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 resource "aws_instance" "app_server" {
-  ami           = var.aws_image_id
+  ami           = data.aws_ami.ami_id.id
   instance_type = "t2.micro"
 
   tags = {
     Name = var.image_tags
   }
 }
+

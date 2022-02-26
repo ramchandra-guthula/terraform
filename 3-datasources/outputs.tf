@@ -12,12 +12,14 @@ output "volume_id" {
   value       = aws_instance.app_server.root_block_device[0].volume_id
 }
 
-#output "regions" {
-#  description = "Getting regions"
-#  value       = data.aws_region.current.id
-#}
+output "availability_zones" {
+  description = "Getting AZ's"
+  value       = data.aws_availability_zones.available
+}
 
 output "ami_id" {
   description = "Getting ami ids"
-  value       = data.aws_ami.web.id
+  value       = data.aws_ami.ami_id.id
 }
+
+
