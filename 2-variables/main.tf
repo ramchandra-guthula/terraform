@@ -15,10 +15,11 @@ provider "aws" {
 }
 
 resource "aws_instance" "app_server" {
-  ami           = var.aws_image_id
+  ami           =  var.aws_image_id != "" ? var.aws_image_id : "ami-0c6615d1e95c98aca"
   instance_type = "t2.micro"
 
   tags = {
-    Name = var.image_tags
+    Name = var.instance_tags[2]
+    second_tag = var.other_tags.type
   }
 }

@@ -17,6 +17,11 @@ provider "aws" {
 data "aws_ami" "ami_id" {
   owners      = ["amazon", "self"]
   most_recent = true
+  
+  filter {
+       name   = "name"
+       values = ["amzn2-ami-kernel-5.10-hvm-*-x86_64-ebs"]  
+  }
 
   filter {
     name   = "root-device-type"
@@ -29,7 +34,7 @@ data "aws_ami" "ami_id" {
   }
 
   tags = {
-    values = "amzn2-ami-kernel-5.10-hvm-*-x86_64-gp2"
+    values = "amzn2-ami-kernel-5.10-hvm-*"
   }
 }
 
@@ -37,12 +42,13 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-resource "aws_instance" "app_server" {
+ resource "aws_instance" "app_server" {
   ami           = data.aws_ami.ami_id.id
   instance_type = "t2.micro"
+  availability_zone = data.aws_availability_zones.available.names[0]
 
   tags = {
     Name = var.image_tags
-  }
-}
+  } 
+} 
 
