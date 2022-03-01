@@ -28,16 +28,7 @@ resource "aws_instance" "app_server" {
   tags = {
     Name = var.instance_tags[2]
     second_tag = var.other_tags.type
-  }
-}
+#    third_tag = var.other_tags.env
 
-
-terraform {
-  backend "s3" {
-    bucket         = "dnx-terraform-backend"
-    key            = "ecs-platform"
-    region         = "ap-southeast-2"
-    encrypt        = true
-    dynamodb_table = "terraform-lock"
   }
 }
