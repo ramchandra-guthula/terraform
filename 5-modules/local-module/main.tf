@@ -96,12 +96,12 @@ resource "aws_instance" "myapp_instance" {
  
   provisioner "remote-exec" {
   
-  connection {
-    type     = "ssh"
-    user     = "ec2-user"
-    private_key = file("~/.ssh/${var.app_name}.pem")
-    host     = aws_instance.myapp_instance.public_ip
-  }
+    connection {
+      type     = "ssh"
+      user     = "ec2-user"
+      private_key = file("~/.ssh/${var.app_name}.pem")
+      host     = aws_instance.myapp_instance.public_ip
+    }
     inline = [
       "sudo yum install httpd -y",
       "sudo cp /tmp/index.html /var/www/html/",

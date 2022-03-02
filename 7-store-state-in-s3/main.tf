@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket         = "terraform-state-dev-sample"
-    key            = "appstack/dev-env-state"
+    key            = "appstack/dev-env-state.json"
     region         = "ap-south-1"
     encrypt        = true
     dynamodb_table = "terraform-lock"
@@ -28,7 +28,7 @@ resource "aws_instance" "app_server" {
   tags = {
     Name = var.instance_tags[2]
     second_tag = var.other_tags.type
-#    third_tag = var.other_tags.env
+   third_tag = var.other_tags.env
 
   }
 }

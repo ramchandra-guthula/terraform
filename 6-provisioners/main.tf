@@ -111,7 +111,7 @@ resource "aws_instance" "myapp_instance" {
   }
 
   provisioner "local-exec" {
-    command = "echo ${aws_instance.myapp_instance.public_ip} >> created_ips.txt"
+    command = "echo ${self.public_ip} >> created_ips.txt"
   }
 
 }
