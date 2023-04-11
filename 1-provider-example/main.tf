@@ -14,7 +14,17 @@ provider "aws" {
   region  = "us-west-2"
 }
 
+provider "aws" {
+  region = "us-west-2"
+  alias  = "target"
+  assume_role {
+    role_arn     = var.target_assume # Update var target_assume
+    session_name = "automation"
+  }
+}
+
 resource "aws_instance" "app_server" {
+  providers = { aws = aws.target } # we are calling alias name
   ami           = "ami-830c94e3"
   instance_type = "t2.micro"
 
